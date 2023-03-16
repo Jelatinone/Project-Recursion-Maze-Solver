@@ -57,16 +57,11 @@ public class Maze extends Thread
      */
     public Integer[] checkForExitPath(int r, int c)
     {
-        //conditional to check that r and c are still within the maze
-        //and that the current value of the maze is still 1.
+        //conditional to check that r and c are still within the maze and that the current value of the maze is still 1.
+        //if conditional to see if the current value of c is at the end of the maze.  Change the value of exitFound.
+        //else save the current position of the maze, mark the spot as visited, and make recursive calls to check each possible path
+        //change the current value of the maze back to the saved value.
 
-        //if conditional to see if the current value of c is at the end
-        //of the maze.  Change the value of exitFound.
-
-        //else save the current position of the maze, mark the spot
-        //as visited, and make recursive calls to check each possible path
-
-        //change the current value of the maze back to the saved value
         try {if(convertToBoolean(maze[r][c])) {maze[r][c] = 2;} else {return new Integer[] {0,Integer.MAX_VALUE};}}
         catch(NullPointerException exception) {return new Integer[] {0,Integer.MAX_VALUE};}
 	    if(Objects.equals(c,maze[0].length)) {maze[r][c] = 3; return new Integer[] {1,1};}

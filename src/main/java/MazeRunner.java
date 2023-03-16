@@ -5,11 +5,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-import static java.lang.System.*;
 
 public class MazeRunner
 {
-    public static void main( String args[] ) throws IOException
+    public static void main(String[] args) throws IOException
     {
         Scanner file = new Scanner(new File("src\\main\\java\\maze.dat"));
         while(file.hasNext())
