@@ -3,41 +3,43 @@
 //Name - Cody Washington
 
 //Libraries
-
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 /**
  * {@code Maze} class represents a two-dimensional square maze made up of tiles represented either by a one, or a zero;
- * where a one represents a path tile and a zero a non-path tile
+ * where a one represents a path tile and a zero a non-path tile. Each maze is initialized with a size and a line of integers
+ * on a new thread and is checked for a valid path between the entrance and exit.  If a valid path is found, the shortest path
+ * is recorded along with its length.
  * @author Cody Washington
  */
 public class Maze extends Thread
 {
     private Integer[][] maze;
-    public Boolean hasEntrance = false;
-    public Boolean hasExit = false;
-    public Boolean hasPath = false;
-    public Boolean isValid = false;
+    public Boolean hasEntrance = false, hasExit = false, hasPath = false, isValid = false;
     public Integer ShortestPath = -1;
 
     /** Default Constructor. */
-    public Maze()
-    {
-        maze = new Integer[0][0];
-    }
+    public Maze() {maze = new Integer[0][0];}
 
-    /** Constructor. */
+    /** Constructor. 
+     * @param size The size of the maze
+     * @param line A line of integers representing the maze
+     */
     public Maze(int size, String line)
     {
-        for(int i = 0, j = 0; i < size; i++, j += size)
+        maze = new Integer[size][size]; 
+        for(int i = 0, j = 0; i < size; i++)
         {
-            maze[i] = Arrays.stream(line.substring(j, (j + size)).split(" ")).map(Integer::parseInt).toList().toArray(Integer[]::new);
-            if(Objects.equals(i,0)) {if(Objects.equals(maze[0][0],1) && getNumberValidDirections(0,0) != 0) {hasEntrance = true;}}
-            if(Objects.equals(maze[i][size],1) && getNumberValidDirections(i,size) != 0) {hasExit = true;}
+            maze[i] = (Arrays.asList(line.substring(j,(j+size-1)).split(" "))).stream().map(s -> Integer.parseInt(s)).
+            collect(Collectors.toList()).stream().toArray(Integer[]::new);
+            if(Objects.equals(i,0)) {if(Objects.equals(maze[0][0],1) && getNumberValidDirections(0,0) != 0){hasEntrance = true;}}
+            if(Objects.equals(maze[i][maze.length-1],1) && getNumberValidDirections(i,maze.length-1) != 0) {hasExit = true;} 
+            if(Objects.equals(i,0)) {j+=4;} else {j+=5;}
         }
-        if(this.hasEntrance && this.hasExit) {isValid = true; this.start();}
+        if(this.hasEntrance && this.hasExit) {this.isValid = true; this.start();}
     }
 
     public void run()
@@ -81,19 +83,25 @@ public class Maze extends Thread
     public Boolean[] checkDirections(int r, int c)
     {
         Boolean[] ValidDirections = new Boolean[4];
-        try {if(convertToBoolean(maze[r][c-1])) {ValidDirections[0] = true;}} catch(NullPointerException exception) {ValidDirections[0] = false;}
-        try {if(convertToBoolean(maze[r+1][c])) {ValidDirections[1] = true;}} catch(NullPointerException exception) {ValidDirections[1] = false;}
-        try {if(convertToBoolean(maze[r][c+1])) {ValidDirections[2] = true;}} catch(NullPointerException exception) {ValidDirections[2] = false;}
-        try {if(convertToBoolean(maze[r-1][c])) {ValidDirections[3] = true;}} catch(NullPointerException exception) {ValidDirections[3] = false;}
+        try  {if(convertToBoolean(maze[r][c-1])) {ValidDirections[0] = true;} else {ValidDirections[0] = false;}} 
+        catch(ArrayIndexOutOfBoundsException exception) {ValidDirections[0] = false;}
+        try {if(convertToBoolean(maze[r+1][c])) {ValidDirections[1] = true;} else {ValidDirections[1] = false;}} 
+        catch(ArrayIndexOutOfBoundsException exception) {ValidDirections[1] = false;}
+        try {if(convertToBoolean(maze[r][c+1])) {ValidDirections[2] = true;} else {ValidDirections[2] = false;}} 
+        catch(ArrayIndexOutOfBoundsException exception) {ValidDirections[2] = false;}
+        try {if(convertToBoolean(maze[r-1][c])) {ValidDirections[3] = true;} else {ValidDirections[3] = false;}} 
+        catch(ArrayIndexOutOfBoundsException exception) {ValidDirections[3] = false;}
         return ValidDirections;
     }
     /** @return The number of directions which contain a valid Integer */
     public Integer getNumberValidDirections(int r, int c)
     {
         int Count = 0;
-        for(Boolean Result: checkDirections(r,c)) {if(Result) {Count++;}}return Count;
+        for(Boolean Result: checkDirections(r,c)) 
+        {if(Result) {Count++;}}return Count;
     }
 
+    /**  @return An Integer(1 or 0) converted to a Boolean */
     public Boolean convertToBoolean(Integer Input) {return Objects.equals(Input, 1);}
 
     public String toString()
