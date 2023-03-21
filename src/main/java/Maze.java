@@ -1,12 +1,9 @@
 //(c) A+ Computer Science
 //www.apluscompsci.com
 //Name - Cody Washington
-
 //Libraries
 import java.util.Arrays;
 import java.util.Objects;
-
-
 /**
  * {@code Maze} class represents a two-dimensional square maze made up of tiles represented either by a one, or a zero;
  * where a one represents a path tile and a zero a non-path tile. Each maze is initialized with a size and a line of integers
